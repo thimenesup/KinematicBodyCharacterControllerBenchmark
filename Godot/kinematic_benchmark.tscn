@@ -1,0 +1,38 @@
+[gd_scene load_steps=3 format=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Spatial
+
+const CHARACTER = preload(\"res://character.tscn\")
+
+export var count = 5000
+
+var characters = []
+
+func _ready():
+	for i in range(count):
+		var character = CHARACTER.instance()
+		character.translation = Vector3(0,0,i * 3)
+		add_child(character)
+		
+		characters.append(character)
+
+func _process(delta):
+	for character in characters:
+		character.move_and_collide(Vector3.FORWARD * delta)
+"
+
+[sub_resource type="GDScript" id=2]
+script/source = "extends Label
+
+func _process(delta):
+	var count = get_parent().count
+	text = \"%sFPS with %s Kinematic Characters\" % [Engine.get_frames_per_second(), count]"
+
+[node name="KinematicBenchmark" type="Spatial"]
+script = SubResource( 1 )
+
+[node name="Label" type="Label" parent="."]
+margin_right = 40.0
+margin_bottom = 14.0
+script = SubResource( 2 )
